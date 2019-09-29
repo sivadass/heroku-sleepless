@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const request = require("request");
 const cron = require("node-cron");
-const { PORT, URL } = require("./config");
+const { PORT, URL, TIMEZONE } = require("./config");
 
 const app = express();
 
@@ -30,16 +30,26 @@ function logData(value = "NO DATA RECEIVED!") {
   });
 }
 
-cron.schedule(`30 5-17 * * *`, function() {
-  request(URL, function(error, response) {
-    const data = {
-      time: new Date().toLocaleString(),
-      code: response ? response.statusCode : "OOOPS!",
-      error: JSON.stringify(error, null, 2)
-    };
-    logData(data);
-  });
-});
+const ping = cron.schedule(
+  "*/29 5-22 * * *",
+  function() {
+    request(URL, function(error, response) {
+      const data = {
+        time: new Date().toLocaleString(),
+        code: response ? response.statusCode : "OOOPS!",
+        error: JSON.stringify(error, null, 2)
+      };
+      logData(data);
+    });
+  },
+  {
+    scheduled: false,
+    timezone: TIMEZONE
+  }
+);
+
+// start the cron job
+ping.start();
 
 app.get("/", function(req, res) {
   res.header("Content-Type", "application/json");
