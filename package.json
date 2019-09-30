@@ -4,8 +4,8 @@
   "description": "A node js app to keep your free heroku server alive",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "dev": "node index.js",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
     "build": "npm install"
   },
   "repository": {
